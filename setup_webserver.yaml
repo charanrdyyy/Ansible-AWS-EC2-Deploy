@@ -1,5 +1,5 @@
 - name: Setup Apache Web Server
-  hosts: webservers
+  hosts: launched
   become: yes
   tasks:
     - name: Install Apache
