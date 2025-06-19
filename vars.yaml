@@ -1,0 +1,6 @@
+aws_region: "us-east-1"
+key_name: "ansiblekey"
+instance_type: "t2.micro"
+ami_id: "ami-020cba7c55df1f615"  # Ubuntu 22.04 (update for your region)
+security_group: "web-sg"
+count: 1
