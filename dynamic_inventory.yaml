@@ -1,15 +1,14 @@
----
-- name: Add EC2 public IP to inventory
-  hosts: localhost
-  gather_facts: no
-  tasks:
-    - name: Get EC2 instance public IP
-      set_fact:
-        instance_ip: "{{ ec2_output.instances[0].network_interfaces[0].association.public_ip }}"
- 
-    - name: Add EC2 instance to inventory file
-      lineinfile:
-        path: inventory.ini
-        line: "{{ instance_ip }} ansible_user=ec2-user ansible_ssh_private_key_file=~/Ansible-AWS-EC2-Deploy/ansiblekey.pem"
-        create: yes
-        insertafter: EOF
+- name: Read EC2 public IP from file
+  slurp:
+    src: "/tmp/ec2_public_ip.txt"
+  register: ip_file
+
+- name: Set fact for public IP
+  set_fact:
+    ec2_public_ip: "{{ ip_file.content | b64decode }}"
+
+- name: Add host to inventory file
+  lineinfile:
+    path: /var/lib/jenkins/workspace/Ansible-AWS-EC2-Deploy/inventory.ini
+    line: "{{ ec2_public_ip }} ansible_user=ec2-user ansible_ssh_private_key_file=~/Ansible-AWS-EC2-Deploy/ansiblekey.pem"
+    create: yes
